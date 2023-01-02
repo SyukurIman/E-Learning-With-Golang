@@ -1,0 +1,36 @@
+{{define "general/index.tmpl"}}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sistem Pembelajaran Daring</title>
+    {{template "general/header"}}
+</head>
+<body class="bg-gray-100 relative">
+  <header class="md:justify-between bg-blue-500 py-4 px-6 shadow-md flex flex-wrap justify-center">
+    <div class="flex flex-wrap justify-between">
+        <h1 class="text-white font-bold sm:text-xl text-md" >Sistem Pembelajaran Daring</h1>
+    </div>
+
+    <div class="flex flex-wrap gap-2">
+        <a href="/login" class="hover:underline rounded-xl btn sm:bg-yellow-500 sm:px-4 sm:py-2 sm:text-l px-5 bg-transparent text-sm  text-white">Login</a>
+        <a href="/register" class="hover:underline rounded-xl btn sm:bg-red-500 sm:px-4 sm:py-2 sm:text-l px-2 bg-transparent text-sm text-white">Register</a>
+    </div>
+  </header>
+  <main class="px-6 py-4 h-screen">
+    <div class="md:justify-around flex flex-wrap  gap-5 p-3 rounded-t-lg shadow-md shadow-blue-300 bg-white">
+        <div class="w-full bg-blue-300 p-3 rounded-t-lg shadow-sm shadow-blue-300">
+            <p class="text-xl font-bold text-center">Selamat datang di Sistem Pembelajaran Daring</p>
+        </div>
+      <p class="mb-0 pl-3 pr-3 text-justify">Sistem ini dibuat untuk memudahkan siswa dasar melakukan ulangan harian, UAS, dan UTS secara daring. Siswa dapat mengerjakan soal yang telah dibuat oleh guru dan melihat hasil nilai setelah mengirim jawabannya.</p>
+      <p class="mb-4 pl-3 pr-3 text-gray-600 text-center">
+        Already have an account? <a class="text-indigo-500 font-bold hover:text-indigo-400" href="/login">Login here</a>
+    </p>
+    </div>
+
+  </main>
+  <footer class="bg-gray-300 py-4 px-6 fixed bottom-0 left-0 right-0">
+    <p class="text-center text-gray-700 text-sm">Copyright Syukur Iman Attaqwa 2022</p>
+  </footer>
+</body>
+</html>
+{{end}}

@@ -1,0 +1,36 @@
+{{define "user/loginUser.tmpl"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{template "general/header"}}
+</head>
+<body class="bg-gray-100">
+    <header class="md:justify-between bg-blue-500 py-4 px-6 shadow-md flex flex-wrap justify-center">
+        <div class="flex flex-wrap justify-between">
+            <h1 class="text-white font-bold sm:text-xl text-md" >Sistem Pembelajaran Daring</h1>
+        </div>
+    
+        <div class="flex flex-wrap gap-2">
+            <a href="/register" class="hover:underline rounded-xl btn sm:bg-red-500 sm:px-4 sm:py-2 sm:text-l px-5 bg-transparent text-sm  text-white">Register</a>
+        </div>
+    </header>
+  <main class="px-6 py-4">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xl font-bold mb-4">Login Siswa</p>
+      <form action="/login/proses" method="post" class="bg-white rounded-lg shadow-md p-4">
+        <label for="email" class="block font-bold mb-2 text-gray-700">Email</label>
+        <input type="text" name="email" id="email" class="block w-full shadow-md  rounded-lg p-2 border-black " required>
+        <label for="password" class="block font-bold mt-4 mb-2 text-gray-700">Password</label>
+        <input type="password" name="password" id="password" class="block w-full shadow-md rounded-lg p-2 border-black " required>
+        <div class="mt-4">
+          <button type="submit" class="btn bg-blue-500 rounded-lg text-white px-4 py-2">Masuk</button>
+        </div>
+      </form>
+    </div>
+  </main>
+  <footer class="bg-gray-300 py-4 px-6 fixed bottom-0 left-0 right-0">
+    <p class="text-center text-gray-700 text-sm">Copyright Syukur Iman Attaqwa 2022</p>
+  </footer>
+</body>
+</html>
+{{end}}
