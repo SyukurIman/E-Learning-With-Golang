@@ -6,6 +6,7 @@ import (
 	"e-learning/repository"
 	"e-learning/utils"
 	"errors"
+	"log"
 	"time"
 )
 
@@ -43,16 +44,19 @@ func (a *adminService) Login(ctx context.Context, admin *entity.Admin) (int, err
 func (a *adminService) Register(ctx context.Context, admin *entity.Admin) (entity.Admin, error) {
 	dbAdmin, err := a.adminRepository.GetAdminByUsername(ctx, admin.Username)
 	if err != nil {
+		log.Println(err)
 		return *admin, err
 	}
 
-	if dbAdmin.Username == "" || dbAdmin.ID == 0 {
+	if dbAdmin.Username != "" || dbAdmin.ID != 0 {
+		log.Println("Email Already")
 		return *admin, errors.New("username already exits")
 	}
 
 	admin.CreatedAt = time.Now()
 	newAdmin, err := a.adminRepository.CreateAdmin(ctx, *admin)
 	if err != nil {
+		log.Println(err)
 		return *admin, err
 	}
 

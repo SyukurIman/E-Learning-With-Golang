@@ -13,6 +13,7 @@ import (
 )
 
 type AuthWeb interface {
+	// User
 	Login(c *gin.Context)
 	LoginProses(c *gin.Context)
 
@@ -20,16 +21,24 @@ type AuthWeb interface {
 	RegisterProses(c *gin.Context)
 
 	Logout(c *gin.Context)
+
+	// Admin
+	LoginAdmin(c *gin.Context)
+	LoginAdminProses(c *gin.Context)
+
+	LogoutAdmin(c *gin.Context)
 }
 
 type authWeb struct {
-	userClient client.UserClient
+	userClient   client.UserClient
+	admindClient client.AdminClient
 }
 
-func NewAuthWeb(userClient client.UserClient) *authWeb {
-	return &authWeb{userClient}
+func NewAuthWeb(userClient client.UserClient, adminClient client.AdminClient) *authWeb {
+	return &authWeb{userClient, adminClient}
 }
 
+// User Function
 func (a *authWeb) Login(c *gin.Context) {
 	login := path.Join("user", "loginUser.tmpl")
 	c.HTML(http.StatusOK, login, nil)
@@ -53,7 +62,6 @@ func (a *authWeb) LoginProses(c *gin.Context) {
 			return
 		}
 		c.SetCookie("session_token", token, 60*60, "/", "", true, true)
-		c.Set("id", strconv.Itoa(userId))
 
 		location := url.URL{Path: "/user/dashboard"}
 		c.Redirect(http.StatusSeeOther, location.RequestURI())
@@ -98,4 +106,43 @@ func (a *authWeb) Logout(c *gin.Context) {
 
 	location := url.URL{Path: "/"}
 	c.Redirect(http.StatusSeeOther, location.RequestURI())
+}
+
+// Admin Function
+func (a *authWeb) LoginAdmin(c *gin.Context) {
+	login := path.Join("admin", "loginAdmin.tmpl")
+	c.HTML(http.StatusOK, login, nil)
+}
+
+func (a *authWeb) LoginAdminProses(c *gin.Context) {
+	username := c.Request.FormValue("username")
+	password := c.Request.FormValue("password")
+
+	userId, status, err := a.admindClient.Login(username, password)
+	if err != nil {
+		http.Error(c.Writer, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if status == 200 {
+		token, err := utils.GenerateToken(strconv.Itoa(userId), "session_token")
+		if err != nil {
+			log.Println(err)
+			http.Redirect(c.Writer, c.Request, "/admin/login", http.StatusSeeOther)
+			return
+		}
+		c.SetCookie("session_token", token, 60*60, "/", "", true, true)
+
+		location := url.URL{Path: "/admin/dashboard"}
+		c.Redirect(http.StatusSeeOther, location.RequestURI())
+	} else {
+		log.Println(err)
+		http.Redirect(c.Writer, c.Request, "/admin/login", http.StatusSeeOther)
+		return
+	}
+
+}
+
+func (a *authWeb) LogoutAdmin(c *gin.Context) {
+
 }

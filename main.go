@@ -15,14 +15,16 @@ import (
 )
 
 type APIHandler struct {
-	UserAPIHandler api.UserAPI
-	TaskAPIHandler api.TaskAPI
+	UserAPIHandler  api.UserAPI
+	TaskAPIHandler  api.TaskAPI
+	AdminAPIHandler api.AdminAPI
 }
 
 type ClientHandler struct {
-	AuthWeb       web.AuthWeb
-	HomeWeb       web.HomeWeb
-	DashboardUser web.DashboardUser
+	AuthWeb        web.AuthWeb
+	HomeWeb        web.HomeWeb
+	DashboardUser  web.DashboardUser
+	DashboardAdmin web.DashboardAdmin
 }
 
 func main() {
@@ -57,31 +59,43 @@ func RunServer(db *gorm.DB, r *gin.Engine) *gin.Engine {
 	// Repository Set
 	userRepo := repository.NewUserRepository(db)
 	taskRepo := repository.NewTaskRepository(db)
+	adminRepo := repository.NewAdminRepository(db)
 
 	// Service Set
 	userService := service.NewUserService(userRepo, taskRepo)
+	adminService := service.NewAdminService(adminRepo)
 
 	// API Set
 	userAPIHandler := api.NewUserAPI(userService)
+	adminAPIHandler := api.NewAdminAPI(adminService)
 	apiHandler := APIHandler{
-		UserAPIHandler: userAPIHandler,
+		UserAPIHandler:  userAPIHandler,
+		AdminAPIHandler: adminAPIHandler,
 	}
 
-	// User Set
+	// Client Set
 	userClient := client.NewUserClient()
-
-	authWeb := web.NewAuthWeb(userClient)
+	adminClient := client.NewAdminClient()
+	authWeb := web.NewAuthWeb(userClient, adminClient)
 	homeWeb := web.NewHomeWeb()
+
+	//User Set
 	dashboardUser := web.NewDashboardUser(userRepo)
 
+	// Admin Set
+	dashboardAdmin := web.NewDashboardAdmin()
+
 	client := ClientHandler{
-		AuthWeb:       authWeb,
-		HomeWeb:       homeWeb,
-		DashboardUser: dashboardUser,
+		AuthWeb:        authWeb,
+		HomeWeb:        homeWeb,
+		DashboardUser:  dashboardUser,
+		DashboardAdmin: dashboardAdmin,
 	}
 
+	// Route
 	auth := r.Group("/")
 	{
+		// User
 		auth.GET("/", client.HomeWeb.Index)
 		auth.GET("/login", client.AuthWeb.Login)
 		auth.POST("/login/proses", client.AuthWeb.LoginProses)
@@ -89,8 +103,18 @@ func RunServer(db *gorm.DB, r *gin.Engine) *gin.Engine {
 		auth.GET("/register", client.AuthWeb.Register)
 		auth.POST("/register/proses", client.AuthWeb.RegisterProses)
 
-		auth.GET("/user/dashboard", utils.Authentication(), client.DashboardUser.Dashboard)
-		auth.GET("/logout", client.AuthWeb.Logout)
+		user := auth.Group("/user")
+		{
+			user.GET("/dashboard", utils.Authentication(), client.DashboardUser.Dashboard)
+			auth.GET("/logout", client.AuthWeb.Logout)
+		}
+
+		// Admin
+		admin := auth.Group("/admin")
+		{
+			admin.GET("/login", client.AuthWeb.LoginAdmin)
+			admin.GET("/dashboard", client.DashboardAdmin.Dashboard)
+		}
 
 		// Bagian API
 		api := auth.Group("/api")
@@ -102,13 +126,14 @@ func RunServer(db *gorm.DB, r *gin.Engine) *gin.Engine {
 				userAPI.POST("/register", apiHandler.UserAPIHandler.Register)
 			}
 
+			// Set Routing Admin API
+			adminAPI := api.Group("/admin/v1")
+			{
+				adminAPI.POST("/login", apiHandler.AdminAPIHandler.Login)
+				adminAPI.POST("/new-admin", apiHandler.AdminAPIHandler.AddNewAdmin)
+			}
 		}
 	}
 
 	return r
 }
-
-// func RunClient(r *gin.Engine) *gin.Engine {
-
-// 	return r
-// }
