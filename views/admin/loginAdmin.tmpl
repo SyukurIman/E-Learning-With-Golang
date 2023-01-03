@@ -1,4 +1,4 @@
-{{define "user/loginUser.tmpl"}}
+{{define "admin/loginAdmin.tmpl"}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,16 +10,16 @@
             <h1 class="text-white font-bold sm:text-xl text-md" >Sistem Pembelajaran Daring</h1>
         </div>
     
-        <div class="flex flex-wrap gap-2">
-            <a href="/user/register" class="hover:underline rounded-xl btn sm:bg-red-500 sm:px-4 sm:py-2 sm:text-l px-5 bg-transparent text-sm  text-white">Register</a>
-        </div>
+        <!-- <div class="flex flex-wrap gap-2">
+            <a href="/register" class="hover:underline rounded-xl btn sm:bg-red-500 sm:px-4 sm:py-2 sm:text-l px-5 bg-transparent text-sm  text-white">Register</a>
+        </div> -->
     </header>
   <main class="px-6 py-4">
     <div class="max-w-3xl mx-auto">
       <p class="text-xl font-bold mb-4">Login Siswa</p>
-      <form action="/user/login/proses" method="post" class="bg-white rounded-lg shadow-md p-4">
-        <label for="email" class="block font-bold mb-2 text-gray-700">Email</label>
-        <input type="text" name="email" id="email" class="block w-full shadow-md  rounded-lg p-2 border-black " required>
+      <form action="/admin/login/proses" method="post" class="bg-white rounded-lg shadow-md p-4">
+        <label for="username" class="block font-bold mb-2 text-gray-700">Username</label>
+        <input type="text" name="username" id="username" class="block w-full shadow-md  rounded-lg p-2 border-black " required>
         <label for="password" class="block font-bold mt-4 mb-2 text-gray-700">Password</label>
         <input type="password" name="password" id="password" class="block w-full shadow-md rounded-lg p-2 border-black " required>
         <div class="mt-4">

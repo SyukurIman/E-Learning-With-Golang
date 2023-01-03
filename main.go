@@ -95,25 +95,26 @@ func RunServer(db *gorm.DB, r *gin.Engine) *gin.Engine {
 	// Route
 	auth := r.Group("/")
 	{
-		// User
 		auth.GET("/", client.HomeWeb.Index)
-		auth.GET("/login", client.AuthWeb.Login)
-		auth.POST("/login/proses", client.AuthWeb.LoginProses)
+		auth.GET("/logout", client.AuthWeb.Logout)
 
-		auth.GET("/register", client.AuthWeb.Register)
-		auth.POST("/register/proses", client.AuthWeb.RegisterProses)
-
+		// User
 		user := auth.Group("/user")
 		{
-			user.GET("/dashboard", utils.Authentication(), client.DashboardUser.Dashboard)
-			auth.GET("/logout", client.AuthWeb.Logout)
+			user.GET("/dashboard", utils.Authentication("/user/login"), client.DashboardUser.Dashboard)
+			user.GET("/login", client.AuthWeb.Login)
+			user.POST("/login/proses", client.AuthWeb.LoginProses)
+
+			user.GET("/register", client.AuthWeb.Register)
+			user.POST("/register/proses", client.AuthWeb.RegisterProses)
 		}
 
 		// Admin
 		admin := auth.Group("/admin")
 		{
 			admin.GET("/login", client.AuthWeb.LoginAdmin)
-			admin.GET("/dashboard", client.DashboardAdmin.Dashboard)
+			admin.POST("/login/proses", client.AuthWeb.LoginAdminProses)
+			admin.GET("/dashboard", utils.Authentication("/admin/login"), client.DashboardAdmin.Dashboard)
 		}
 
 		// Bagian API

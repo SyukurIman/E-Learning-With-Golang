@@ -46,7 +46,7 @@ func ClaimsToken(tokenString string, typeKey string) (string, error) {
 	return result, nil
 }
 
-func Authentication() gin.HandlerFunc {
+func Authentication(path string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		headerType := c.Request.Header.Get("Content-Type")
 		cookie, err := c.Cookie("session_token")
@@ -55,7 +55,7 @@ func Authentication() gin.HandlerFunc {
 				c.JSON(http.StatusUnauthorized, "Error")
 				return
 			} else {
-				location := url.URL{Path: "/login"}
+				location := url.URL{Path: path}
 				c.Redirect(http.StatusSeeOther, location.RequestURI())
 				return
 			}
@@ -63,7 +63,7 @@ func Authentication() gin.HandlerFunc {
 
 		id, err := ClaimsToken(cookie, "session_token")
 		if err != nil {
-			location := url.URL{Path: "/login"}
+			location := url.URL{Path: path}
 			c.Redirect(http.StatusSeeOther, location.RequestURI())
 			return
 		}

@@ -58,7 +58,7 @@ func (a *authWeb) LoginProses(c *gin.Context) {
 		token, err := utils.GenerateToken(strconv.Itoa(userId), "session_token")
 		if err != nil {
 			log.Println(err)
-			http.Redirect(c.Writer, c.Request, "/login", http.StatusSeeOther)
+			http.Redirect(c.Writer, c.Request, "/user/login", http.StatusSeeOther)
 			return
 		}
 		c.SetCookie("session_token", token, 60*60, "/", "", true, true)
@@ -66,7 +66,7 @@ func (a *authWeb) LoginProses(c *gin.Context) {
 		location := url.URL{Path: "/user/dashboard"}
 		c.Redirect(http.StatusSeeOther, location.RequestURI())
 	} else {
-		http.Redirect(c.Writer, c.Request, "/login", http.StatusSeeOther)
+		http.Redirect(c.Writer, c.Request, "/user/login", http.StatusSeeOther)
 	}
 }
 
@@ -89,14 +89,14 @@ func (a *authWeb) RegisterProses(c *gin.Context) {
 		token, err := utils.GenerateToken(strconv.Itoa(userId), "session_token")
 		if err != nil {
 			log.Println(err)
-			http.Redirect(c.Writer, c.Request, "/login", http.StatusSeeOther)
+			http.Redirect(c.Writer, c.Request, "/user/register", http.StatusSeeOther)
 			return
 		}
 		c.SetCookie("session_token", token, 60*60, "/", "", true, true)
 		location := url.URL{Path: "/user/dashboard"}
 		c.Redirect(http.StatusSeeOther, location.RequestURI())
 	} else {
-		location := url.URL{Path: "/register"}
+		location := url.URL{Path: "/user/register"}
 		c.Redirect(http.StatusSeeOther, location.RequestURI())
 	}
 }
